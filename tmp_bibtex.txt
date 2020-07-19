@@ -1,4 +1,4 @@
-@article{Chang1998StructureMsclHomolog,
+@article{Chang_1998,
 	doi = {10.1126/science.282.5397.2220},
 	url = {https://doi.org/10.1126%2Fscience.282.5397.2220},
 	year = 1998,
@@ -11,4 +11,3 @@
 	title = {Structure of the {MscL} Homolog from Mycobacterium tuberculosis: A Gated Mechanosensitive Ion Channel},
 	journal = {Science}
 }
-
