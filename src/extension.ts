@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 			var doi = document.lineAt(editor.selection.active.line).text; // the text at the current line should be the doi
 			doi = doi.trim().replace(' ','');
 			console.log('doi = '+doi);
-			vscode.window.showInformationMessage('Getting bibtex for '+doi);
+			// vscode.window.showInformationMessage('Getting bibtex for '+doi);
 			// run python code to get the bibtex entry (string)
 			const cmd = 'python get_bibtex_from_doi.py ' + doi + '> tmp_bibtex.txt';
 			console.log('cmd = '+cmd);
@@ -51,8 +51,6 @@ export function activate(context: vscode.ExtensionContext) {
 					}
                 });
 			});
-			// make the selection empty
-			console.log(editor.selections);
         };
 	});
 	context.subscriptions.push(disposable);
