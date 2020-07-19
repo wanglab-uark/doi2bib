@@ -4,8 +4,8 @@ Convert DOI to bibtex entry for a `.bib` file in vscode. Note that this package 
 
 ## Requirements
 
-* `urllib.request` (Python 3.X): https://docs.python.org/3/library/urllib.request.html#module-urllib.request
-* `requests` (Python 3.X): https://requests.readthedocs.io/en/master/
+* `urllib.request` (Python 3): https://docs.python.org/3/library/urllib.request.html#module-urllib.request
+* `requests` (Python 3): https://requests.readthedocs.io/en/master/
 * `child_process` (Node.js): https://nodejs.org/api/child_process.html
 * `fs` (Node.js): https://nodejs.org/api/fs.html
 
