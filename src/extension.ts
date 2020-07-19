@@ -1,13 +1,23 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+
+
+// DOI2Bib: convert doi to bibtex entry
+// 
+// Author: Yong Wang (yongwang@uark.edu)
+// Date:   07/19/2020
+// Copyright (c) Yong Wang @ University of Arkansas
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY!
+
+
 import * as vscode from 'vscode';
 
 function modify_bibkey(bibtex:string) {
 	if (bibtex.indexOf('DOI Not Found') >= 0) return bibtex;
 	const chars_to_ignore = '!@#$%^&*()=+,./<>?~\[\]\\\{\}|;:"';
 	const chars_to_space = '-_';
-	const words_to_ignore = ['this ','that ','and ','or ','a ','an ','the ','of ',
-                        'as ','on ','via ','by ','in ','at ',
+	const words_to_space = [' this ',' that ',' and ',' or ',' a ',' an ',' the ',' of ',
+                        ' as ',' on ',' via ',' by ',' in ',' at ',
 						"'s ","' "];
 	const lines = bibtex.split('\n');
 	let ss = lines[0].split('{');
@@ -29,8 +39,8 @@ function modify_bibkey(bibtex:string) {
 	for(i=0; i<chars_to_space.length; i++) {
 		title = title.split(chars_to_space.charAt(i)).join(' ').trim();
 	}
-	for(i=0; i<words_to_ignore.length; i++) {
-		title = title.split(words_to_ignore[i]).join('').trim();
+	for(i=0; i<words_to_space.length; i++) {
+		title = title.split(words_to_space[i]).join(' ').trim();
 	}
 	console.log('clean title = ' + title);
     // get the title words
@@ -79,16 +89,20 @@ export function activate(context: vscode.ExtensionContext) {
                 editor.edit(editBuilder => {
                     if (data.length > 5) {
 						data = modify_bibkey(data);
-                        editBuilder.replace(new vscode.Range(editor.selection.active.line, 0, editor.selection.active.line+1, 0), data);
                         if (data.indexOf('DOI Not Found')>=0) { // did not found the DOI, show error
                             vscode.window.showWarningMessage('DOI Not Found: '+doi)
                             console.log('Error: DOI Not Found');
                         }
-                        else { // sucess
+						else { // sucess
+							editBuilder.replace(new vscode.Range(editor.selection.active.line, 0, editor.selection.active.line+1, 0), data);
                             vscode.window.showInformationMessage('Success for bibtex from '+doi);
                             console.log('Success!');
                         }
-                    };
+					}
+					else {
+						vscode.window.showWarningMessage('No doi.org response for '+doi);
+						console.log('Error: too short in the results. Likely something is wrong.');
+					}
                 });
                 if (err) {
                     vscode.window.showErrorMessage('Error in DOI2Bib ...');
