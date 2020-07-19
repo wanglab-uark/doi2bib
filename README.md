@@ -2,12 +2,17 @@
 
 Convert DOI to bibtex entry for a `.bib` file in vscode.
 
+
+1. Open the `.bib` file you want to edit in vscode.
+2. In a new line, paste the DOI (e.g., 10.1038/nphys1170).
+3. Run `DOI2Bib` using the Command Palette.
+
+Optional: create a shortcut for `DOI2Bib`
+
 ## Requirements
 
-* `urllib.request` (Python 3): https://docs.python.org/3/library/urllib.request.html#module-urllib.request
-* `requests` (Python 3): https://requests.readthedocs.io/en/master/
-* `child_process` (Node.js): https://nodejs.org/api/child_process.html
-* `fs` (Node.js): https://nodejs.org/api/fs.html
+* `cURL`: install it from https://curl.haxx.se/
+* `child_process`: install it by `npm install child_process`
 
 ### 0.0.1
 
