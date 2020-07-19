@@ -1,4 +1,5 @@
 {
+	"publisher": "wanglab-uark",
 	"name": "doi2bib",
 	"displayName": "DOI2Bib",
 	"description": "",
@@ -21,6 +22,9 @@
 			}
 		]
 	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/wanglab-uark/doi2bib.git"},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
