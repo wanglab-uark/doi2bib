@@ -35,6 +35,7 @@ def get_bibtex(doi):
         return bibtex
 
 def modify_bibtex_key_with_3_title_words(bibtex):
+    # quick but ugly implementation
     if bibtex.find('DOI Not Found')>=0:
         return bibtex
     # define the sets of characters or words to 

@@ -1,6 +1,6 @@
 # doi2bib README
 
-Convert DOI to bibtex entry for a `.bib` file in vscode. Note that this package requires Python.
+Convert DOI to bibtex entry for a `.bib` file in vscode.
 
 ## Requirements
 
