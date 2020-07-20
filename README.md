@@ -1,20 +1,20 @@
 # doi2bib README
 
-Convert DOI to bibtex entry for a `.bib` file in vscode.
+Convert a DOI (or PMID or PMCID) to a bibtex entry in vscode.
 
 
-1. Open the `.bib` file you want to edit in vscode.
-2. In a new line, paste the DOI (e.g., 10.1038/nphys1170).
+1. Open a file (e.g., `.bib` file) you want to edit in vscode.
+2. In a new line, paste the DOI (e.g., 10.1038/nphys1170), or PMID, or PMCID.
 3. Run `DOI2Bib` using the Command Palette.
 
 Optional: create a shortcut for `DOI2Bib`
 
 ## Requirements
 
-* `cURL`: install it from https://curl.haxx.se/
-* `child_process`: install it by `npm install child_process`
+* `request`: https://github.com/request/request
+* Internet connection to NCBI (https://www.ncbi.nlm.nih.gov) and doi.org (https://doi.org)
 
-### 0.0.1
+### 0.0.4
 
 Initial release.
 

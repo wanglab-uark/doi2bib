@@ -10,7 +10,7 @@ All notable changes to the "doi2bib" extension will be documented in this file.
 
 - Disable html show-up for unfound DOI
 
-## v0.0.3
+## v0.0.4
 
 - Add PMID/PMCID support.
 - Remove dependence on `curl`
