@@ -77,38 +77,70 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		const editor = vscode.window.activeTextEditor; // get the active editor
         if (editor) {
-            const document = editor.document; //
-			var doi = document.lineAt(editor.selection.active.line).text; // the text at the current line should be the doi
-			doi = doi.trim().replace(' ','');
-			console.log('doi = '+doi);
-			// vscode.window.showInformationMessage('Getting bibtex for '+doi);
-			const cmd = 'curl -L -H "Accept: application/x-bibtex" https://doi.org/' + doi;
-			console.log('cmd = '+cmd);
-            const cp = require('child_process');
-			cp.exec(cmd, { timeout: 5000 }, (err: any, data: string, stderr: string) => {
-                editor.edit(editBuilder => {
-                    if (data.length > 5) {
-						data = modify_bibkey(data);
-                        if (data.indexOf('DOI Not Found')>=0) { // did not found the DOI, show error
-                            vscode.window.showWarningMessage('DOI Not Found: '+doi)
-                            console.log('Error: DOI Not Found');
-                        }
-						else { // sucess
-							editBuilder.replace(new vscode.Range(editor.selection.active.line, 0, editor.selection.active.line+1, 0), data);
-                            vscode.window.showInformationMessage('Success for bibtex from '+doi);
-                            console.log('Success!');
-                        }
-					}
-					else {
-						vscode.window.showWarningMessage('No doi.org response for '+doi);
-						console.log('Error: too short in the results. Likely something is wrong.');
-					}
-                });
-                if (err) {
-                    vscode.window.showErrorMessage('Error in DOI2Bib ...');
-                    console.log('error: ' + err);
-                };
-            }); // wait for the command to finish
+            const document = editor.document; // get the current document
+			var curline = document.lineAt(editor.selection.active.line).text; // the text at the current line
+			curline = curline.trim().split(' ').join(''); // Remove spaces
+			console.log('current line = ' + curline);
+			const lowercase = curline.toLowerCase();
+			if (lowercase.startsWith('doi:') || lowercase.startsWith('pmid:') || lowercase.startsWith('pmcid:')) {
+				// remove starting doi/pmid/pmcid if present
+				let ss = curline.split(':');
+				curline = ss[1].trim();
+				console.log('cleaned curline = ' + curline);
+			}
+			const request = require('request');
+			const url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+curline+'&format=json';
+			console.log('url = '+url);
+			request(url, // convert anything to doi using NCBI convertor
+				(err_ncbi:any, resp_ncbi:string, data_ncbi:string)=>{
+				if (err_ncbi) { // error
+					vscode.window.showErrorMessage('Unable to connect to NCBI!');
+					console.log('Error when connecting to NCBI: ' + err_ncbi);
+					return err_ncbi; // do nothing and return
+				}
+				console.log('data_ncbi = ' + data_ncbi);
+				if (JSON.parse(data_ncbi).status == 'error') {
+					vscode.window.showWarningMessage('Invalid DOI or PMID or PMCID!');
+					console.log('Error when getting doi from NCBI');
+					return 'fail'; // do nothing and return
+				}
+				const doi = JSON.parse(data_ncbi).records[0].doi;
+				console.log('doi = ' + doi);
+				if (doi.length>5) { // obtained DOI and it seems OK
+					const options = {
+						url: 'https://doi.org/'+doi,
+						headers: {'Accept': 'application/x-bibtex'} 
+					};
+					request(options, // get bibtex entry from doi.org
+						(err_doi:any, resp_doi:string, data_doi:string)=>{
+						let data=data_doi;
+						editor.edit(editBuilder => {
+							if (data.length > 5) {
+								data = modify_bibkey(data); // modify bibkey
+								if (data.indexOf('DOI Not Found')>=0) { // did not found the DOI, show error
+									vscode.window.showWarningMessage('DOI Not Found: '+doi)
+									console.log('Error: DOI Not Found');
+								}
+								else { // sucess
+									editBuilder.replace(
+										new vscode.Range(editor.selection.active.line, 0, editor.selection.active.line+1, 0), 
+										data);
+									vscode.window.showInformationMessage('Success for bibtex from '+doi);
+									console.log('Success!');
+								}
+							}
+							else {
+								vscode.window.showWarningMessage('No doi.org response for '+doi);
+								console.log('Error: too short in the results. Likely something is wrong.');
+							}
+						});
+						if (err_doi) {
+							vscode.window.showErrorMessage('Error in DOI2Bib ...');
+							console.log('error: ' + err_doi);
+						};
+					});
+				}
+			});
         };
 	});
 	context.subscriptions.push(disposable);
