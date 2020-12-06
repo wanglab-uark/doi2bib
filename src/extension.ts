@@ -81,6 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
 			var curline = document.lineAt(editor.selection.active.line).text; // the text at the current line
 			curline = curline.trim().split(' ').join(''); // Remove spaces
 			console.log('current line = ' + curline);
+			vscode.window.showInformationMessage('DOI2BIB> getting bib for ' + curline);
 			const lowercase = curline.toLowerCase();
 			if (lowercase.startsWith('doi:') || lowercase.startsWith('pmid:') || lowercase.startsWith('pmcid:')) {
 				// remove starting doi/pmid/pmcid if present
@@ -106,6 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				const doi = JSON.parse(data_ncbi).records[0].doi;
 				console.log('doi = ' + doi);
+				vscode.window.showInformationMessage('DOI2BIB> doi = ' + doi);
 				if (doi.length>5) { // obtained DOI and it seems OK
 					const options = {
 						url: 'https://doi.org/'+doi,
